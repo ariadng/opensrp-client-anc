@@ -23,6 +23,7 @@ import org.smartregister.view.activity.DrishtiApplication;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -47,6 +48,7 @@ public class PatientRepository extends BaseRepository {
         try {
             SQLiteDatabase db = getMasterRepository().getReadableDatabase();
 
+
             String query =
                     "SELECT " + StringUtils.join(projection, ",") + " FROM " + getRegisterQueryProvider().getDemographicTable() + " join " + getRegisterQueryProvider().getDetailsTable() +
                             " on " + getRegisterQueryProvider().getDemographicTable() + "." + DBConstantsUtils.KeyUtils.BASE_ENTITY_ID + " = " + getRegisterQueryProvider().getDetailsTable() + "." + DBConstantsUtils.KeyUtils.BASE_ENTITY_ID + " WHERE " +
@@ -64,7 +66,21 @@ public class PatientRepository extends BaseRepository {
                     }
                 }
             }
+
+            // Get additional localized values
+            String localQuery = "SELECT * FROM client WHERE baseEntityId = ?";
+            Cursor localCursor = db.rawQuery(localQuery, new String[]{baseEntityId});
+            if (localCursor != null && localCursor.moveToFirst()) {
+                String jsonString = localCursor.getString(3);
+                if (jsonString != null) {
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    if (jsonObject.has("nik")) detailsMap.put("nik", jsonObject.getString("nik"));
+                    if (jsonObject.has("bpjs")) detailsMap.put("bpjs", jsonObject.getString("bpjs"));
+                }
+            }
+
             return detailsMap;
+
         } catch (Exception e) {
             Timber.e(e, "%s ==> getWomanProfileDetails()", PatientRepository.class.getCanonicalName());
         } finally {

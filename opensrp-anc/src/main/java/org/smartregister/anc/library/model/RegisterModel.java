@@ -10,7 +10,6 @@ import org.smartregister.anc.library.AncLibrary;
 import org.smartregister.anc.library.contract.RegisterContract;
 import org.smartregister.anc.library.util.ANCJsonFormUtils;
 import org.smartregister.anc.library.util.Utils;
-import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.location.helper.LocationHelper;

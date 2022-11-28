@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -33,8 +34,8 @@ import org.smartregister.anc.library.activity.EditJsonFormActivity;
 import org.smartregister.anc.library.domain.YamlConfigItem;
 import org.smartregister.anc.library.domain.YamlConfigWrapper;
 import org.smartregister.anc.library.model.ContactSummaryModel;
+import org.smartregister.anc.library.model.Client;
 import org.smartregister.anc.library.model.Task;
-import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.FormEntityConstants;
 import org.smartregister.domain.Photo;
@@ -230,7 +231,7 @@ public class ANCJsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
             FormTag formTag = getFormTag(allSharedPreferences);
 
-            Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(fields, formTag, entityId);
+            Client baseClient = new Client(org.smartregister.util.JsonFormUtils.createBaseClient(fields, formTag, entityId));
             Event baseEvent = org.smartregister.util.JsonFormUtils
                     .createEvent(fields, metadata, formTag, entityId, encounterType, DBConstantsUtils.DEMOGRAPHIC_TABLE_NAME);
 
@@ -239,7 +240,13 @@ public class ANCJsonFormUtils extends org.smartregister.util.JsonFormUtils {
             }
             tagSyncMetadata(allSharedPreferences, baseEvent);// tag docs
 
-            return Pair.create(baseClient, baseEvent);
+            // Add values for Indonesia-specific requirements
+            String nik = ANCJsonFormUtils.getFieldValue(fields, Client.Constants.NIK);
+            String bpjs = ANCJsonFormUtils.getFieldValue(fields, Client.Constants.BPJS);
+            Client client = ((Client) baseClient).withNik(nik).withBpjs(bpjs);
+
+            return Pair.create(client, baseEvent);
+
         } catch (Exception e) {
             Timber.e(e, "JsonFormUtils --> processRegistrationForm");
             return null;
@@ -388,14 +395,10 @@ public class ANCJsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static void mergeAndSaveClient(Client baseClient) throws Exception {
+
         JSONObject updatedClientJson = new JSONObject(org.smartregister.util.JsonFormUtils.gson.toJson(baseClient));
-
-        JSONObject originalClientJsonObject =
-                AncLibrary.getInstance().getEcSyncHelper().getClient(baseClient.getBaseEntityId());
-
+        JSONObject originalClientJsonObject = AncLibrary.getInstance().getEcSyncHelper().getClient(baseClient.getBaseEntityId());
         JSONObject mergedJson = org.smartregister.util.JsonFormUtils.merge(originalClientJsonObject, updatedClientJson);
-
-        //TODO Save edit log ?
 
         AncLibrary.getInstance().getEcSyncHelper().addClient(baseClient.getBaseEntityId(), mergedJson);
     }

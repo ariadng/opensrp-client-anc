@@ -2,6 +2,7 @@ package org.smartregister.anc.library.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.core.util.Pair;
 
@@ -13,11 +14,11 @@ import org.smartregister.anc.library.contract.RegisterContract;
 import org.smartregister.anc.library.interactor.ContactInteractor;
 import org.smartregister.anc.library.interactor.ProfileInteractor;
 import org.smartregister.anc.library.interactor.RegisterInteractor;
+import org.smartregister.anc.library.model.Client;
 import org.smartregister.anc.library.util.ANCJsonFormUtils;
 import org.smartregister.anc.library.util.ConstantsUtils;
 import org.smartregister.anc.library.util.DBConstantsUtils;
 import org.smartregister.anc.library.util.Utils;
-import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
 

@@ -24,7 +24,6 @@ import org.smartregister.anc.library.BuildConfig;
 import org.smartregister.anc.library.activity.BaseUnitTest;
 import org.smartregister.anc.library.util.ANCJsonFormUtils;
 import org.smartregister.anc.library.util.ConstantsUtils;
-import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.location.helper.LocationHelper;
 import org.smartregister.repository.AllSharedPreferences;

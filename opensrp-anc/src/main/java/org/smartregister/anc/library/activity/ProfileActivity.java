@@ -57,7 +57,7 @@ import timber.log.Timber;
 /**
  * Created by ndegwamartin on 10/07/2018.
  */
-public class ProfileActivity extends BaseProfileActivity implements ProfileContract.View {
+public class ProfileActivity extends CoreBaseProfileActivity implements ProfileContract.View {
     public static final String CLOSE_ANC_RECORD = "Close ANC Record";
     private TextView nameView;
     private TextView ageView;
